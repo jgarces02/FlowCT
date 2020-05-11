@@ -2,11 +2,9 @@
 #'
 #' It shows marker names of a \code{FCS.SE} object and renames them accordin a new vector provided by the user.
 #' @param fcs.SE A FCS.SE object generated through \code{\link[FlowCT:fcs.SE]{FlowCT::fcs.SE()}}.
-#' @param new.names Vector with new channel/marker names (it must has the same length that \code{FCS.SE}'s markers). Default = \code{NULL} (i.e., markers will not be renamed, only displayec).
-#' @keywords median values
-#' @keywords MFI
-#' @keywords median fluorescence intensity
-#' @export median.values
+#' @param new.names Vector with new channel/marker names (it must has the same length that \code{FCS.SE}'s markers). Default = \code{NULL} (i.e., markers will not be renamed, only displayed).
+#' @keywords marker renaming names
+#' @export marker.names
 #' @examples
 #' \dontrun{
 #' marker.names(fcs_se)
