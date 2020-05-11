@@ -46,7 +46,7 @@ dotplot.DE <- function(fcs.SE, assay.i = "normalized", clusters.named = "SOM_nam
     geom_point() + 
     scale_color_continuous(na.value = "gray70", name = "Marker\nimportance") +
     scale_size_area(max_size = scale.size, name = "Median\nfluorescence") +
-    labs(x = "", y = "") + theme_bw() + theme(axis.text.x = element_text(angle = 45, hjust = 1)))
+    labs(x = "", y = "") + theme_bw() + theme(axis.text.x = element_text(angle = 45, hjust = 1))))
   
   if(return.stats) return(dtm2)
 }
