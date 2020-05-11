@@ -6,7 +6,7 @@
 #' @param clusters.named Column name from the \code{initial.fcs.SE} object which contains renamed clusters (through \code{\link[FlowCT:clusters.rename]{FlowCT::clusters.rename()}}).
 #' @param markers.to.use Vector with markers to use. Default = \code{"all"}.
 #' @param psig.cutoff P-value cutoff. Default = \code{0.05}.
-#' @param return.stats Logical indicating if calculated statistics should be returned in a new variable. Default = \code{FALSE}.
+#' @param stats.return Logical indicating if calculated statistics should be returned in a new variable. Default = \code{FALSE}.
 #' @param scale.size Numerical value indicating how much scale points. Default = \code{9}.
 #' @keywords differential dotplot
 #' @keywords cell cluster identification
@@ -18,7 +18,8 @@
 #' dotplot.DE(fcs.SE = fcs_se, markers.to.use = c("CD8", "CD27", "CCR4", "CD45RA", "CD4"), clusters.named = "SOM_named")
 #' }
 
-dotplot.DE <- function(fcs.SE, assay.i = "normalized", clusters.named = "SOM_named", markers.to.use = "all", psig.cutoff = 0.05, return.stats = F, scale.size = 9){
+dotplot.DE <- function(fcs.SE, assay.i = "normalized", clusters.named = "SOM_named", markers.to.use = "all", 
+                       psig.cutoff = 0.05, stats.return = F, scale.size = 9){
   if(markers.to.use == "all") markers.to.use <- rownames(fcs.SE)
   
   dt <- data.frame()
@@ -47,6 +48,6 @@ dotplot.DE <- function(fcs.SE, assay.i = "normalized", clusters.named = "SOM_nam
     scale_size_area(max_size = scale.size, name = "Median\nfluorescence") +
     labs(x = "", y = "") + theme_bw() + theme(axis.text.x = element_text(angle = 45, hjust = 1)))
   
-  if(return.stats) return(dtm2)
+  if(stats.return) return(dtm2)
 }
 
