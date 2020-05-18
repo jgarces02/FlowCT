@@ -8,9 +8,10 @@
 #' @param directory If \code{filelist = NULL}, those files stored in this location will be read. Default = \code{getwd()} (current directory).
 #' @param pattern Pattern for reading files within \code{directory}. Default = \code{"fcs"}.
 #' @param physical.markers Vector with physical markers (i.e., FCS-A, SSC-H, etc.). Mandatory for perfoming quality control.
-#' @param output.folder Folder name for storing final FCS files. Default = \code{NULL} (current directory).
+#' @param output.folder Folder name for storing final FCS files. Default, the same of \code{directory}.
 #' @param output.suffix Suffix added to new generated FCS files (in case not being working with a \code{FCS.SE} object). Default = \code{qc}.
 #' @param return.idx Logical indicating whether output is a new \code{FCS.SE} object without low-quality events or an index with this positions (without removing them from original \code{FCS.SE}). This option is only available if the input is a \code{FCS.SE} object. Default = \code{F} (\code{FCS.SE} output).
+#' @param return.fcs Logical indicating whether new FCS file should be generated without low quality events. They will stored in specified \code{output.folder} with the corresponding \code{output.suffix}.
 #' @keywords quality control
 #' @keywords doublets removal
 #' @keywords remove low quality events
@@ -30,7 +31,7 @@
 #' idx_qc <- qc.and.removeDoublets(directory = "../data/", physical.markers = c("FSC_A", "FSC_H", "SSC_A", "SSC_H"), output.folder = "HQ_files")
 #' }
 
-qc.and.removeDoublets <- function(fcs.SE = NULL, filelist = NULL, directory = getwd(), pattern = "fcs", physical.markers, output.folder = NULL, output.suffix = "qc", return.idx = F){
+qc.and.removeDoublets <- function(fcs.SE = NULL, filelist = NULL, directory = getwd(), pattern = "fcs", physical.markers, output.folder = directory, output.suffix = "qc", return.idx = F){
   if(!is.null(fcs.SE)){
     fcs <- as.flowSet.SE(fcs.SE, assay.i = "raw")
     filenames <- fcs@phenoData@data$name
@@ -53,11 +54,22 @@ qc.and.removeDoublets <- function(fcs.SE = NULL, filelist = NULL, directory = ge
       idx <- c(idx, rownames(exprs(fcs[[file]]))[c(idx1, idx2)])
       losses <- append(losses, round(length(c(idx1, idx2))/nrow(fcs[[file]])*100, digits = 2))
       names(losses)[length(losses)] <- file
+      
+      # generate new high QC FCS
+      if(return.fcs){
+        extension <- tolower(strsplit(filenames[1], split="\\.")[[1]][-1])
+        idx_fcs <- unique(rownames(exprs(fcs[[file]]))[c(idx1, idx2)])
+
+        file_return <- premessa::as_flowFrame(exprs(fcs[[file]])[-match(idx_fcs, rownames(exprs(fcs[[file]]))),])
+        flowCore::write.FCS(file_return, paste0(output.folder, "/", gsub(extension, "", file), output.suffix, ".", extension))
+      }      
     }
+    if(return.fcs) cat("New generated FCSs without low quality events are stored in:", output.folder)
     print(knitr::kable(as.data.frame(losses), col.names = "removed events (%)"))
+    fcs.SE@metadata$lowQC_events <- idx #store removed events index
+    
     if(return.idx) return(idx) else return(fcs.SE[,-match(idx, colnames(fcs.SE))])
   }else{
-    if(!is.null(output.folder)) dir.create(output.folder) else output.folder <- directory 
     if(is.null(filelist)) filelist <- list.files(path = directory, pattern = pattern, full.names = T)
     
     for(file in filelist){
