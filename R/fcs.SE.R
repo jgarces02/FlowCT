@@ -32,10 +32,8 @@
 #' }
 
 fcs.SE <- function(filelist = NULL, directory = getwd(), pattern = ".fcs$", events = "all", dataset = 1, num.threads = NULL, metadata, transformation = "arcsinh", transf.cofactor = 500){
-  if(events == "all") events <- NULL
-
   # read FCS files
-  fcs <- suppressMessages(read.FCSset(filelist, directory, pattern, events, dataset, num.threads))
+  fcs <- suppressMessages(read.FCSset(filelist, directory, pattern, events = events, dataset, num.threads))
   raw_data <- flowCore::fsApply(fcs, flowCore::exprs)
   colnames(raw_data) <- paste0(fcs[[1]]@parameters@data$name, ":", fcs[[1]]@parameters@data$desc)
   
