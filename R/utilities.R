@@ -103,14 +103,14 @@ markers.names <- function (fcs, new_names = NULL){
   lapply(c("grid", "gridExtra", "ggplot2"), require, character.only = TRUE)
 
   if(is.null(new_names)){
-    if(all(fcs[[1]]@parameters@data$name == fcs@colnames)){
+    if(all(fcs[[1]]@parameters@data$name == colnames(fcs)){
       print(knitr::kable(data.frame(fcs[[1]]@parameters@data$name, 
                                                   fcs[[1]]@parameters@data$desc, "not defined yet!"), 
                                        col.names = c("Florophore/Channel", "Marker (default name)", 
                                                 "New marker name")))
     }else{
       print(knitr::kable(data.frame(fcs[[1]]@parameters@data$name, 
-                                  fcs[[1]]@parameters@data$desc, fcs@colnames), 
+                                  fcs[[1]]@parameters@data$desc, colnames(fcs)), 
                                        col.names = c("Florophore/Channel", "Marker (default name)", "New marker name")))
     }
 
@@ -120,7 +120,7 @@ markers.names <- function (fcs, new_names = NULL){
                                                 fcs[[1]]@parameters@data$desc, new_names), 
                                      col.names = c("Florophore/Channel", "Marker (default name)", "New marker name")))
 
-    fcs@colnames <- new_names
+    colnames(fcs) <- new_names
     return(fcs)
   }
 }
