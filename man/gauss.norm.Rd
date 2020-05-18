@@ -8,6 +8,8 @@ gauss.norm(fcs.SE, marker.to.norm)
 }
 \arguments{
 \item{fcs.SE}{A FCS.SE object generated through \code{\link[FlowCT:fcs.SE]{FlowCT::fcs.SE()}}.}
+ 
+\item{assay.i}{Name of matrix stored in the \code{FCS.SE} object from which calculate correlation. Default = \code{"transformed"}.}
 
 \item{marker.to.norm}{Marker name(s) to normalize (based on visual inspection with \code{\link[FlowCT:multidensity]{FlowCT::multidensity()}}).}
 
