@@ -14,11 +14,6 @@ as.flowSet.SE(fcs.SE, assay.i)
 \description{
 It tranforms a FCS.SE object into a (\href{https://www.rdocumentation.org/packages/flowCore/versions/1.38.2/topics/flowSet-class}{flowset}) object.
 }
-\examples{
-\dontrun{
- sc_metadata <- scMetadata.fromFCS(fcs, metadata, add.exprs = T)
-}
-}
 \keyword{FCS.SE}
 \keyword{flowset}
 \keyword{generation}
