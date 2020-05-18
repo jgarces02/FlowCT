@@ -6,7 +6,7 @@
 \usage{
 qc.and.removeDoublets(fcs.SE = NULL, filelist = NULL,
   directory = getwd(), pattern = "fcs", physical.markers,
-  output.folder = NULL, output.suffix = "qc", return.idx = F)
+  output.folder = NULL, output.suffix = "qc", return.idx = F, return.fcs = F)
 }
 \arguments{
 \item{fcs.SE}{A FCS.SE object generated through \code{\link[FlowCT:fcs.SE]{FlowCT::fcs.SE()}}. If \code{NULL} (default), this function will search for FCS files within current working directory.}
@@ -24,6 +24,9 @@ qc.and.removeDoublets(fcs.SE = NULL, filelist = NULL,
 \item{output.suffix}{Suffix added to new generated FCS files (in case not being working with a \code{FCS.SE} object). Default = \code{qc}.}
 
 \item{return.idx}{Logical indicating whether output is a new \code{FCS.SE} object without low-quality events or an index with this positions (without removing them from original \code{FCS.SE}). This option is only available if the input is a \code{FCS.SE} object. Default = \code{F} (\code{FCS.SE} output).}
+              
+\item{return.fcs}{Logical indicating whether new FCS file should be generated without low quality events. They will stored in specified \code{output.folder} with the corresponding \code{output.suffix}.}
+
 }
 \value{
 Final output is a new \code{FCS.SE} object (if FCS.SE input) without these events that do not pass the quality control or new FCS files with the suffix \code{qc} with these low quality events removed. If user specifies \code{return.idx = T}, output would be a vector with all low-quality events positions.
