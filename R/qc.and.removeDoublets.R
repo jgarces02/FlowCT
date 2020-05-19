@@ -11,7 +11,7 @@
 #' @param output.folder Folder name for storing final FCS files. Default, the same of \code{directory}.
 #' @param output.suffix Suffix added to new generated FCS files (in case not being working with a \code{FCS.SE} object). Default = \code{qc}.
 #' @param return.idx Logical indicating whether output is a new \code{FCS.SE} object without low-quality events or an index with this positions (without removing them from original \code{FCS.SE}). This option is only available if the input is a \code{FCS.SE} object. Default = \code{F} (\code{FCS.SE} output).
-#' @param return.fcs Logical indicating whether new FCS file should be generated without low quality events. They will stored in specified \code{output.folder} with the corresponding \code{output.suffix}.
+#' @param return.fcs Logical indicating whether new FCS file should be generated without low quality events. If \code{TRUE} (default = \code{FALSE}), they will stored in specified \code{output.folder} with the corresponding \code{output.suffix}.
 #' @keywords quality control
 #' @keywords doublets removal
 #' @keywords remove low quality events
@@ -31,7 +31,7 @@
 #' idx_qc <- qc.and.removeDoublets(directory = "../data/", physical.markers = c("FSC_A", "FSC_H", "SSC_A", "SSC_H"), output.folder = "HQ_files")
 #' }
 
-qc.and.removeDoublets <- function(fcs.SE = NULL, filelist = NULL, directory = getwd(), pattern = "fcs", physical.markers, output.folder = directory, output.suffix = "qc", return.idx = F){
+qc.and.removeDoublets <- function(fcs.SE = NULL, filelist = NULL, directory = getwd(), pattern = "fcs", physical.markers, output.folder = directory, output.suffix = "qc", return.idx = F, return.fcs = F){
   if(!is.null(fcs.SE)){
     fcs <- as.flowSet.SE(fcs.SE, assay.i = "raw")
     filenames <- fcs@phenoData@data$name
