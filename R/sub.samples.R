@@ -47,7 +47,6 @@ sub.samples <- function (fcs.SCE, subsampling = 1000, index = F, unbalanced = NU
       }else{
         sub_idx <- append(sub_idx, aux[sample(length(aux), subsampling0)])    
       }
-      Sys.sleep(1/1000)
     }
     cat("\n")
     
@@ -69,7 +68,6 @@ sub.samples <- function (fcs.SCE, subsampling = 1000, index = F, unbalanced = NU
       }else{
         sub_idx <- append(sub_idx, aux[sample(length(aux), subsampling0)])    
       }
-      Sys.sleep(1/1000)
     }
     cat("\n")
     
