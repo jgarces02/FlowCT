@@ -2,7 +2,7 @@
 % Please edit documentation in R/remove.pop.R
 \name{remove.pop}
 \alias{remove.pop}
-\title{Delete a population from a \code{fcs.SCE} object}
+\title{Delete a population from a \code{fcs.SCE} object ---> DEPRECATED soon! (see updated tutorial)}
 \usage{
 remove.pop(fcs.SCE, population, clusters.named)
 }
