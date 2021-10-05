@@ -1,4 +1,4 @@
-#' Delete a population from a \code{fcs.SCE} object
+#' Delete a population from a \code{fcs.SCE} object ---> DEPRECATED soon! (see updated tutorial)
 #'
 #' It removes one or multiple cell populations from a \code{fcs.SCE} object.
 #' @param fcs.SCE A \code{fcs.SCE} object generated through \code{\link[FlowCT:fcs.SCE]{FlowCT::fcs.SCE()}}.
