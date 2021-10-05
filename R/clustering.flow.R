@@ -51,7 +51,8 @@ clustering.flow <- function(fcs.SCE, assay.i = "normalized", method, scale = FAL
     code_clustering1 <- mc[[num.k]]$consensusClass %>% as.factor() #get cluster ids for each cell
     cell_clustering1 <- code_clustering1[fsom$map$mapping[,1]]
 
-    colData(fcs.SCE)[,paste0("SOM.k", num.k)] <- cell_clustering1
+    aux_colname <- make.unique(c(colnames(colData(fcs.SCE)), c(paste0("SOM.k", num.k))))[ncol(colData(fcs.SCE))+1]
+    colData(fcs.SCE)[,aux_colname] <- cell_clustering1
     return(fcs.SCE)
   }else if(tolower(method) == "seurat"){
     if(!requireNamespace("Seurat", quietly = TRUE)) stop("Package \"Seurat\" needed for this function to work. Please install it.", call. = FALSE) else require(Seurat)
@@ -64,7 +65,8 @@ clustering.flow <- function(fcs.SCE, assay.i = "normalized", method, scale = FAL
     s <- FindNeighbors(s, dims = seurat.dims)
     s <- FindClusters(s, resolution = seurat.res)
 
-    colData(fcs.SCE)[,paste0("seurat.r", seurat.res)] <- as.factor(as.numeric(as.character(s$seurat_clusters))+1)
+    aux_colname <- make.unique(c(colnames(colData(fcs.SCE)), c(paste0("seurat.r", seurat.res))))[ncol(colData(fcs.SCE))+1]
+    colData(fcs.SCE)[,aux_colname] <- as.factor(as.numeric(as.character(s$seurat_clusters))+1)
     return(fcs.SCE)
   }else if(tolower(method) == "phenograph"){
     if(!requireNamespace("Rphenograph", quietly = TRUE)) stop("Packages \"Rphenograph\" needed for this function to work. Please install it.", call. = FALSE)
@@ -73,7 +75,9 @@ clustering.flow <- function(fcs.SCE, assay.i = "normalized", method, scale = FAL
     if(length(markers.to.use) == 1 && markers.to.use == "all") markers.to.use <- colnames(data)
 
     Rphenograph_out <- Rphenograph::Rphenograph(data[,markers.to.use], k = num.k)
-    colData(fcs.SCE)[,paste0("phenog.k", num.k)] <- factor(Rphenograph_out[[2]]$membership)
+
+    aux_colname <- make.unique(c(colnames(colData(fcs.SCE)), c(paste0("phenog.k", num.k))))[ncol(colData(fcs.SCE))+1]
+    colData(fcs.SCE)[,aux_colname] <- factor(Rphenograph_out[[2]]$membership)
     return(fcs.SCE)
   }else if(tolower(method) == "parc"){
     if(!requireNamespace("reticulate", quietly = TRUE)) stop("Package \"reticulate\" needed for this function to work. Please install it.", call. = FALSE) else require(reticulate)
