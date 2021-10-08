@@ -17,46 +17,39 @@
 #' }
 
 combine.subclusterings <- function(global.fcs.SCE, subclustering.fcs.SCE, clusters.named){
-  mdg <- colData(global.fcs.SCE)
- 
-  subclusterings <- c()
-  rm.cells <- list()
-	  for(i in subclustering.fcs.SCE){
-	    sub_pop <- as.character(unique(i[[clusters.named[1]]]))
-	   
-	    md_sub <- colData(i)
-	   
-	    # add differential cols from subclusterings
-	    diff1 <- setdiff(colnames(md_sub), colnames(mdg))
-	    mdg[,diff1] <- NA
-	    diff2 <- setdiff(colnames(mdg), colnames(md_sub))
-	    md_sub[,diff2] <- NA
-	   
-	    # extract those subclustered samples from original fcs.SCE object
-	    mdg <- rbind(mdg[mdg[[clusters.named[1]]] != sub_pop,], md_sub)
+  subclusterings <- unique(unlist(lapply(subclustering.fcs.SCE, function(x) colData(x)[[clusters.named[1]]])))
 
-	    # delete removed populations from the (i)th subclustering within the first fcs.SCE object
-	    if(!is.null(i@metadata$removed_populations)){
-	      for(j in names(i@metadata$removed_populations)){
-	          rm.cells[[j]] <- i@metadata$removed_populations[[j]]
-	          mdg <- mdg[setdiff(mdg$cell_id, i@metadata$removed_populations[[j]]),]
-	         
-	          # substract deleted cells from original assays
-	          global.fcs.SCE <- global.fcs.SCE[, global.fcs.SCE$cell_id %in% setdiff(mdg$cell_id, i@metadata$removed_populations[[j]])]
-	       }
-	    }
-	  }
- 
-  # create final named_cluster col
-  for(i in setdiff(colnames(mdg), c(colnames(colData(global.fcs.SCE)), clusters.named)))
-  	mdg[,i] <- ifelse(is.na(mdg[,i]), 0, mdg[,i]) #replace NAs by 0 to avoid FCS wrong building
- 
-  mdg$final_clustering <- factor(do.call(dplyr::coalesce, mdg[,clusters.named[-1], drop = F]))
-  mdg$final_clustering <- ifelse(is.na(mdg$final_clustering), as.character(mdg[[clusters.named[1]]]), as.character(mdg$final_clustering))
- 
-  colData(global.fcs.SCE) <- mdg[match(global.fcs.SCE$cell_id, mdg$cell_id),] # same cell_id order than initial fcs.SCE
-  global.fcs.SCE@metadata$subclusterings$populations <- paste(subclusterings, collapse = " + ")
-  global.fcs.SCE@metadata$subclusterings$removed_populations <- rm.cells
- 
+  ## combine subclusterings
+  subs <- unlist(lapply(1:length(subclustering.fcs.SCE), function(x){
+    aux <- colData(subclustering.fcs.SCE[[x]])[clusters.named[1+x]]
+    setNames(aux[[1]], rownames(aux)) #pop/id labelling
+  }))
+
+  # ## extract removed populations and substract them from global, v1 (metadata, deprecated)
+  # rems <- lapply(subclustering.fcs.SCE, function(x) x@metadata$removed_populations)
+  # names(rems) <- subclusterings
+  # rems2 <- unlist(rems, use.names = F)
+  
+  # global.fcs.SCE <- global.fcs.SCE[,!(colnames(global.fcs.SCE) %in% rems2)] #time-consuming
+
+  ## extract removed populations and substract them from global, v2 (no metadata)
+  rems3 <- mapply(function(x, y) { #diffs between global and subclustered ones
+    aux <- global.fcs.SCE[,global.fcs.SCE[[clusters.named[1]]] == x]
+    setdiff(colnames(aux), colnames(y))
+    }, subclusterings, subclustering.fcs.SCE)
+
+  global.fcs.SCE <- global.fcs.SCE[,!(colnames(global.fcs.SCE) %in% unlist(rems3))] #time-consuming
+
+  ## final clustering
+  global.fcs.SCE$final_clustering <- as.character(global.fcs.SCE[[clusters.named[1]]])
+  global.fcs.SCE$final_clustering[match(names(subs), global.fcs.SCE$cell_id)] <- as.character(subs)
+
+  global.fcs.SCE$final_clustering <- factor(global.fcs.SCE$final_clustering)
+
+  ## add subclustering information into metadata
+  # global.fcs.SCE@metadata$subclusterings$populations <- paste(subclusterings, collapse = " + ")
+  # global.fcs.SCE@metadata$subclusterings$removed_populations <- rems
+  global.fcs.SCE@metadata$combined_subclusterings <- paste(subclusterings, collapse = " + ")
+
   return(global.fcs.SCE)
 }
