@@ -48,7 +48,6 @@ Suggests:
     ggtree,
     gridExtra,
     Hmisc,
-    maxstat,
     partykit,
     plotly,
     rpart,
