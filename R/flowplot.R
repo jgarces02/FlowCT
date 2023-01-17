@@ -26,7 +26,7 @@
 #' }
 
 flowplot <- function(fcs.SCE, assay.i = "normalized", x.axis, y.axis, densities = T, color.by, select.values.color = "all", size = 0.5, colors = NULL){
-  if (!requireNamespace(c("cowplot", "gridExtra"), quietly = TRUE)) stop("Package \"cowplot\" and \"gridExtra\" needed for this function to work. Please install it.", call. = FALSE)
+  if (!requireNamespace(c("cowplot", "gridExtra", "scattermore"), quietly = TRUE)) stop("Package \"cowplot\", \"scattermore\" and \"gridExtra\" needed for this function to work. Please install them.", call. = FALSE)
 
   data <- as.data.frame(cbind(colData(fcs.SCE), t(assay(fcs.SCE, assay.i))))
 
@@ -41,7 +41,8 @@ flowplot <- function(fcs.SCE, assay.i = "normalized", x.axis, y.axis, densities 
   gglist <- list()
   for(i in 1:nrow(combos)){
     g1 <- ggplot(data, aes_string(x = combos[i,1], y = combos[i,2], color = color.by)) +
-      geom_point(size = size) +
+      #geom_point(size = size) +
+      scattermore::geom_scattermore(pointsize = size, pixels = rep(2000, 2))
       scale_color_manual(values = colors) +
       theme_bw() + guides(color = guide_legend(ncol = 3))
     legend <- cowplot::get_legend(g1)
