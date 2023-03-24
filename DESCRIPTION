@@ -14,21 +14,21 @@ RoxygenNote: 7.1.1
 Depends:
     R (>= 4.0.0),
     SingleCellExperiment (>= 1.10.1)
-Imports:
     flowCore (>= 2.0.0),
+    SummarizedExperiment,
+    ncdfFlow,
+    progress,
+    filesstrings
+Imports:
     data.table,
     dplyr,
     ggplot2,
     ggpubr,
     methods,
-    ncdfFlow,
     pheatmap,
-    progress,
     RColorBrewer,
     reticulate,
-    SummarizedExperiment,
-    scales,
-    filesstrings
+    scales
 Remotes: 
     immunogenomics/harmony,
     exaexa/scattermore
